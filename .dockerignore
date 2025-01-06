@@ -1,0 +1,45 @@
+# Python caches
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+.env.*
+
+# Local configuration files
+*.local
+*.env
+
+# Test and documentation directories
+tests/
+docs/
+
+# Temporary files
+*.tmp
+*.log
+
+# Version control
+.git
+.gitignore
+
+# Docker files to exclude Dockerfiles themselves
+docker/
+
+# IDE directories and files
+.vscode/
+.idea/
+*.swp
+
+# Static and media files (if applicable)
+staticfiles/
+media/
+
+# Database files
+db.sqlite3
+
+# Build directories
+dist/
+build/

@@ -1,0 +1,24 @@
+torch==2.5.0+cpu
+sentence-transformers==2.2.2
+TTS==0.22.0
+# Remaining packages
+fastapi==0.115.6
+uvicorn==0.34.0 
+pdfplumber
+python-docx
+beautifulsoup4
+chardet==5.1.0
+python-multipart
+spacy==3.8.3
+pydantic==2.10.4
+langdetect==1.0.9
+langid==1.1.6
+json-log-formatter
+huggingface_hub==0.16.4
+
+simpleaudio
+duckduckgo_search
+lxml>=4.9.2
+requests>=2.31.0
+langchain>=0.0.198
+unstructured>=0.6.3

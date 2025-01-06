@@ -1,0 +1,37 @@
+# Stage 1: Build stage
+FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04 as build
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV WORKDIR=/whisper
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    build-essential \
+    cmake \
+    libsndfile1-dev \
+    libsdl2-dev \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN git clone https://github.com/ggerganov/whisper.cpp.git $WORKDIR
+
+WORKDIR $WORKDIR
+
+RUN cmake -B build -DGGML_CUDA=1 -DWHISPER_SDL2=ON && cmake --build build -j$(nproc) --config Release && make -j medium
+
+# Stage 2: Runtime stage
+FROM nvidia/cuda:12.6.3-base-ubuntu24.04 as runtime
+
+ENV WORKDIR=/whisper
+WORKDIR $WORKDIR
+
+COPY --from=build $WORKDIR/build/whisper ./whisper
+COPY --from=build $WORKDIR/models ./models
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libsndfile1 \
+    libssl3 \
+    libsdl2-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+CMD ["bash"]

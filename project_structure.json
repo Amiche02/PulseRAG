@@ -1,0 +1,41 @@
+{
+    "project_structure.json": null,
+    "workflow": {
+        "extraction_indexing.py": null,
+        "tools": {
+            "audio_player.py": null
+        },
+        "tts_generation.py": null,
+        "__init__.py": null
+    },
+    ".dockerignore": null,
+    "main.py": null,
+    "setup.py": null,
+    "structure.py": null,
+    "README.md": null,
+    "config": {
+        "config.py": null
+    },
+    "env": {
+        "spacy_models.sh": null,
+        "requirements.cpu.txt": null,
+        "requirements.gpu.txt": null
+    },
+    "ragutils": {
+        "services": {
+            "indexer.py": null,
+            "text_extractor.py": null,
+            "tts.py": null,
+            "segment.py": null,
+            "embedder.py": null,
+            "__init__.py": null
+        },
+        "utils.py": null
+    },
+    "docker": {
+        "dockerfile.ragutils.gpu": null,
+        "dockerfile.ragutils.cpu": null,
+        "dockerfile.whisper.gpu": null,
+        "dockerfile.whisper.cpu": null
+    }
+}
