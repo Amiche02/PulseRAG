@@ -1,0 +1,65 @@
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+venv/
+.env
+
+# Ignore configuration files with sensitive info
+*.env
+secrets.json
+
+# Ignore logs and temporary files
+*.log
+*.out
+*.err
+*.pid
+*.dat
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# Ignore output directories
+outputs/
+dist/
+build/
+*.egg-info/
+
+# Ignore Docker cache
+docker/whisper/dockerfile.whisper.cpu.test
+*.tar
+*.lock
+
+# Ignore compiled code files
+*.so
+*.a
+*.o
+
+# Ignore IDE-specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore Jupyter Notebook checkpoints (if applicable)
+.ipynb_checkpoints/
+
+# Ignore documentation build artifacts
+/docs/_build/
+
+# Ignore tests caches and temp files
+tests/__pycache__/
+workflow/__pycache__/
+ragutils/services/__pycache__/
+
+# Ignore unnecessary project-specific files
+project_structure.json

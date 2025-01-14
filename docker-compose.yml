@@ -1,22 +1,22 @@
 services:
-  whisper-gpu:
+  whisper:
     build:
-      context: .
-      dockerfile: docker/dockerfile.whisper.gpu
-    container_name: whisper-gpu-test
+      context: ./docker/whisper  
+      dockerfile: dockerfile.whisper.cpu
+    container_name: whisper_api_cpu_container
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all 
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility  
-    stdin_open: true 
-    tty: true  
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+      - PULSE_SERVER=unix:/run/user/${UID}/pulse/native
+      - PULSE_COOKIE=/run/user/${UID}/pulse/cookie
     volumes:
-      - ./volumes/whisper:/whisper/data  
-    working_dir: /whisper
-    runtime: nvidia  
+      - /dev/snd:/dev/snd  
+      - /run/user/${UID}/pulse:/run/user/${UID}/pulse  
+      - ~/.config/pulse/cookie:/run/user/${UID}/pulse/cookie:ro  
+    devices:
+      - /dev/snd 
+    ports:
+      - "8080:8080"  
+    restart: unless-stopped 
+
+volumes:
+  audio_data:
+    driver: local

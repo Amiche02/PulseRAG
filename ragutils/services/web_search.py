@@ -14,31 +14,33 @@ except ImportError:
     LANGCHAIN_AVAILABLE = False
 
 
-class BaseWebSearchService(ABC):
+class WebSearchService(ABC):
     """
     Common interface for a web search + scraping service.
     Subclasses must implement `search_and_scrape(query)`.
     """
+
     @abstractmethod
     def search_and_scrape(self, query: str) -> List[Dict]:
         """
         Execute a search + retrieve textual content.
-        Returns a list of dicts, e.g.:
-          [
-            {
-              "title": str,
-              "url": str,
-              "body_snippet": str,
-              "raw_text": str
-            }, ...
-          ]
+        Returns a list of dicts, for example:
+            [
+              {
+                "title": str,
+                "url": str,
+                "body_snippet": str,
+                "raw_text": str
+              },
+              ...
+            ]
         """
         pass
 
 
-class DuckDuckGoSearchService(BaseWebSearchService):
+class DuckDuckGoSearchService(WebSearchService):
     """
-    A service to perform web search (with DuckDuckGo) and scrape results
+    A service to perform a DuckDuckGo web search and then scrape results
     *without* using LangChain.
     """
 
@@ -48,11 +50,13 @@ class DuckDuckGoSearchService(BaseWebSearchService):
     def _search_duckduckgo(self, query: str) -> List[Dict]:
         results = []
         with DDGS() as ddgs:
-            for result in ddgs.text(query,
-                                    region='wt-wt',
-                                    safesearch='moderate',
-                                    timelimit=None,
-                                    max_results=self.max_results):
+            for result in ddgs.text(
+                query,
+                region='wt-wt',
+                safesearch='moderate',
+                timelimit=None,
+                max_results=self.max_results
+            ):
                 results.append(result)
         return results
 
@@ -68,11 +72,12 @@ class DuckDuckGoSearchService(BaseWebSearchService):
             return ""
 
         soup = BeautifulSoup(resp.content, "lxml")
+        # Remove scripts and styles
         for tag in soup(["script", "style"]):
             tag.decompose()
 
         text = soup.get_text(separator="\n")
-        # reduce multiple newlines
+        # Reduce multiple newlines
         text = re.sub(r"\n\s*\n+", "\n\n", text).strip()
         return text
 
@@ -83,6 +88,7 @@ class DuckDuckGoSearchService(BaseWebSearchService):
             url = item.get("href", "")
             if not url:
                 continue
+
             page_text = self._scrape_webpage(url)
             output.append({
                 "title": item.get("title", ""),
@@ -93,9 +99,9 @@ class DuckDuckGoSearchService(BaseWebSearchService):
         return output
 
 
-class LangChainWebSearchService(BaseWebSearchService):
+class LangChainWebSearchService(WebSearchService):
     """
-    A service to perform web search + scraping using LangChain utilities.
+    A service to perform a web search + scraping using LangChain utilities.
     Only works if LangChain is installed. Check `LANGCHAIN_AVAILABLE`.
     """
 
@@ -107,17 +113,17 @@ class LangChainWebSearchService(BaseWebSearchService):
         self.searcher = DuckDuckGoSearchAPIWrapper()
 
     def search_and_scrape(self, query: str) -> List[Dict]:
-        # The wrapper typically has a .run() method. 
-        # For older langchain versions, check usage or do searcher._ddgr.run(...)
-        # We'll assume .run(query) returns a list of {title, link, snippet}
+        # For older langchain versions, usage may differ.
+        # We'll assume ._ddgr.run(query, max_results=self.k) returns a list of dicts:
+        # [{ title, link, snippet }, ...]
         raw_results = self.searcher._ddgr.run(query, max_results=self.k)
 
         output = []
         for res in raw_results:
-            url = res.get('link') or ''
-            if not url.startswith('http'):
+            url = res.get("link") or ""
+            if not url.startswith("http"):
                 continue
-            # Load the webpage
+
             loader = UnstructuredURLLoader(urls=[url])
             docs = loader.load()
             combined_text = "\n\n".join(doc.page_content for doc in docs if doc.page_content)

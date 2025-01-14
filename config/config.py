@@ -95,3 +95,30 @@ AVAILABLE_EMBEDDING_MODELS = [
         "description": "An English-only model optimized for speed and accuracy."
     },
 ]
+
+
+class STTConfig(BaseModel):
+    server_url: str = Field(
+        default="http://127.0.0.1:8080/inference",
+        description="Whisper.cpp server inference endpoint URL."
+    )
+    language: str = Field(
+        default="en",
+        description="Language code to use for forced transcription."
+    )
+    sample_rate: int = Field(
+        default=16000,
+        description="Audio sample rate for capturing microphone."
+    )
+    vad_aggressiveness: int = Field(
+        default=2,
+        description="WebRTC VAD aggressiveness: 0 (lowest) to 3 (highest)."
+    )
+    chunk_ms: int = Field(
+        default=30,
+        description="Frame size in milliseconds (10, 20, or 30) for WebRTC VAD."
+    )
+    silence_ms: int = Field(
+        default=800,
+        description="How many ms of silence before concluding a segment."
+    )

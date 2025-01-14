@@ -1,5 +1,3 @@
-# workflow/web_search_indexing.py
-
 import logging
 import asyncio
 from typing import Dict, List
@@ -12,13 +10,12 @@ from ragutils.services import (
 
 logger = logging.getLogger(__name__)
 
-
 class WebSearchIndexingWorkflow:
     """
     Example workflow that:
       1. Does a web search (via a chosen web search service).
       2. Chunks + Embeds the search results.
-      3. Returns or persists them somehow (the example returns them as a list of indexed_data).
+      3. Returns or persists them (the example returns them as a list).
     """
 
     def __init__(
@@ -28,7 +25,8 @@ class WebSearchIndexingWorkflow:
         embedder: EmbeddingService = None
     ):
         """
-        :param search_service: An instance of a web search service (DuckDuckGoSearchService or LangChainWebSearchService).
+        :param search_service: An instance of a web search service,
+                               e.g. DuckDuckGoSearchService or LangChainWebSearchService
         :param segmenter: Your custom segmentation logic
         :param embedder: Your embedding service
         """
@@ -50,17 +48,15 @@ class WebSearchIndexingWorkflow:
         raw_results = self.search_service.search_and_scrape(query)
         logger.info(f"Got {len(raw_results)} results for query: {query}")
 
-        # 2) Prepare a list of "documents" to feed to indexer
-        # indexer expects: {document_id, text, metadata}
+        # 2) Prepare a list of "documents" to feed to the indexer
         documents_to_process = []
         for i, result in enumerate(raw_results):
             doc_id = f"web-{i}"
             text_content = result.get("raw_text", "")
             meta = {
-                "title": result.get("title", ""),
-                "url": result.get("url", ""),
-                "snippet": result.get("body_snippet", "")
-                # Add any other fields as desired
+                "title":   result.get("title", ""),
+                "url":     result.get("url", ""),
+                "snippet": result.get("body_snippet", ""),
             }
             documents_to_process.append({
                 "document_id": doc_id,
@@ -69,11 +65,6 @@ class WebSearchIndexingWorkflow:
             })
 
         # 3) Index them (async)
-        # We'll use the indexer's "index_documents" method. 
-        # But if you prefer the pattern used in extraction_indexing,
-        # you can replicate that approach. The difference here is we 
-        # already have the text, not a file to read from.
         indexed_data_list = await self.indexer.index_documents(documents_to_process)
-
         logger.info(f"Completed indexing {len(indexed_data_list)} documents from web search.")
         return indexed_data_list

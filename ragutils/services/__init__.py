@@ -2,10 +2,10 @@ from .embedder import EmbeddingService, EmbeddingModel
 from .indexer import Indexer
 from .segment import CustomSegment
 from .text_extractor import TextExtractor, ExtractionResult
-from .tts import TTSService, Voice
 
+# UPDATED import to match the class rename
 from .web_search import (
-    BaseWebSearchService,
+    WebSearchService,        # <--- Renamed from BaseWebSearchService
     DuckDuckGoSearchService,
     LangChainWebSearchService
 )
@@ -17,9 +17,7 @@ __all__ = [
     "CustomSegment",
     "TextExtractor",
     "ExtractionResult",
-    "TTSService",
-    "Voice",
-    "BaseWebSearchService",
+    "WebSearchService",       # <--- Make sure it's here
     "DuckDuckGoSearchService",
     "LangChainWebSearchService",
 ]

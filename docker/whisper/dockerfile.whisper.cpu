@@ -4,19 +4,32 @@ FROM ${IMAGE}
 ENV DEBIAN_FRONTEND=noninteractive
 ENV WORKDIR=/whisper
 
+# Install required dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     build-essential \
     cmake \
-    libsdl2-dev \
     wget \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# Clone whisper.cpp and build it
 RUN git clone https://github.com/ggerganov/whisper.cpp.git $WORKDIR
 
 WORKDIR $WORKDIR
 
-RUN cmake -B build -DWHISPER_SDL2=ON && \
+# Build the whisper.cpp server and download the "medium" model automatically
+RUN cmake -B build -DWHISPER_SDL2=OFF && \
     cmake --build build -j$(nproc) --config Release && make -j medium
 
-CMD ["bash"]
+# Add whisper binary to PATH
+ENV PATH="${WORKDIR}/build/bin:${PATH}"
+
+# Default model path and library path
+ENV MODEL_PATH="${WORKDIR}/models/ggml-medium.bin"
+ENV LD_LIBRARY_PATH="${WORKDIR}/build/bin"
+
+EXPOSE 8080
+
+# Run whisper server automatically
+CMD ["whisper-server", "--host", "0.0.0.0", "--port", "8080", "--model", "/whisper/models/ggml-medium.bin", "--threads", "4"]

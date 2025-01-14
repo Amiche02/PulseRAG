@@ -157,7 +157,7 @@ class EmbeddingService:
             ValueError: If input validation fails.
         """
         if not texts or not all(isinstance(text, str) and text.strip() for text in texts):
-            raise ValueError("Input must be a list of non-empty strings.")
+            return []
 
         # Group texts by detected language
         language_groups: Dict[str, List[str]] = {}

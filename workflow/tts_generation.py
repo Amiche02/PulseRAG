@@ -2,9 +2,8 @@ import logging
 import asyncio
 from typing import Optional, AsyncGenerator
 
-from ragutils.services import TTSService
+from audio import TTSService
 from workflow.tools.audio_player import play_wav_bytes
-
 
 logger = logging.getLogger(__name__)
 

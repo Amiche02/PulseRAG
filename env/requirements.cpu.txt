@@ -22,3 +22,8 @@ lxml>=4.9.2
 requests>=2.31.0
 langchain>=0.0.198
 unstructured>=0.6.3
+
+pydub
+sounddevice
+webrtcvad
+# faiss-cpu

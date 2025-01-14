@@ -37,16 +37,17 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Amiche02/PulseRAG.git
+   git clone https://github.com/Amiche02/PulseRAG.git 
    cd PulseRAG
    ```
 
 2. **Install Python and dependencies:**
    ```bash
    sudo apt update
-   sudo apt install python3-gi gir1.2-gstreamer-1.0  # GStreamer for audio
-   sudo apt install python3-dev build-essential     # Development tools
-
+   sudo apt install libasound2-dev
+   sudo apt install ffmpeg
+   sudo apt-get install portaudio19-dev
+   
    sudo add-apt-repository ppa:deadsnakes/ppa       # Optional for Python 3.11
    sudo apt install python3.11-dev
    ```
